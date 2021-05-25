@@ -1,13 +1,12 @@
-const axios = require("axios");
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
-import { StyleSheet, View, Button, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View } from 'react-native';
 
-import TableCell from "../../UI/TableCell";
-import NewTableCell from "./NewTableCell";
+import NewTableCell from './NewTableCell';
 
 let horizontalColorMemory = [];
 let verticalColorMemory = [];
+let excluded = [];
 let crossover = 0;
 
 const generateTableData = () => {
@@ -26,17 +25,17 @@ const generateTableData = () => {
       _key = x.toString() + y.toString();
       _value = (x + 1) * (y + 1);
       if (x === 0 && y !== 0) {
-        _type = "toggle";
-        _function = "vertical";
+        _type = 'toggle';
+        _function = 'vertical';
       } else if (y === 0 && x !== 0) {
-        _type = "toggle";
-        _function = "horizontal";
+        _type = 'toggle';
+        _function = 'horizontal';
       } else if (x === 0 && y === 0) {
-        _type = "toggle";
-        _function = "dummy";
+        _type = 'toggle';
+        _function = 'dummy';
       } else {
-        _type = "body";
-        _function = "body";
+        _type = 'body';
+        _function = 'body';
       }
       Obj = {
         key: _key,
@@ -58,133 +57,123 @@ let tableData = generateTableData();
 const Table = (props) => {
   const cellRefs = useRef([]);
 
-  const horizontalColorHandler = (event) => {
+  const horizontalColorHandler = (value) => {
     if (crossover) {
-      cellRefs.current[crossover].setAttribute(
-        "style",
-        "backgroundColor: #7121a6; color: #fff;"
-      );
+      if (!excluded.includes(cellRefs.current[crossover].props.title)) {
+        cellRefs.current[crossover].changeColor('#7121a6', '#ffffff');
+      }
     }
-    if (horizontalColorMemory[0]) {
-      cellRefs.current[horizontalColorMemory[0]].setAttribute(
-        "style",
-        "backgroundColor: #9377a6; color: #000;"
+    if (horizontalColorMemory[0] >= 0) {
+      cellRefs.current[horizontalColorMemory[0]].changeColor(
+        '#9377a6',
+        '#000000'
       );
     }
     for (let n of horizontalColorMemory.slice(1)) {
       if (!verticalColorMemory.includes(n)) {
-        cellRefs.current[n].setAttribute(
-          "style",
-          "backgroundColor: #d7b7ed; color: #000;"
-        );
+        if (!excluded.includes(cellRefs.current[n].props.title)) {
+          cellRefs.current[n].changeColor('#d7b7ed', '#000000');
+        }
       }
     }
 
     horizontalColorMemory = [];
-    let index = (10 - parseInt(event.target.innerHTML)) * 10;
+    let index = (10 - parseInt(value)) * 10;
     for (let x = index; x < index + 10; x++) {
-      cellRefs.current[x].setAttribute(
-        "style",
-        "backgroundColor: #7121a6; color: #fff;"
-      );
+      if (!excluded.includes(cellRefs.current[x].props.title)) {
+        cellRefs.current[x].changeColor('#7121a6', '#ffffff');
+      }
       horizontalColorMemory.push(x);
       for (let n of horizontalColorMemory) {
         for (let x of verticalColorMemory) {
           if (x === n) {
-            cellRefs.current[x].setAttribute(
-              "style",
-              "backgroundColor: #580c7a; color: #fff;"
-            );
-            crossover = n;
+            if (!excluded.includes(cellRefs.current[x].props.title)) {
+              cellRefs.current[x].changeColor('#580c7a', '#ffffff');
+            }
+            crossover = x;
           }
         }
       }
     }
+    cellRefs.current[index].changeColor('#7121a6', '#ffffff');
   };
 
   const verticalColorHandler = (value) => {
-    console.log("pressed");
-    console.log(value);
     if (crossover) {
-      cellRefs.current[crossover].changeColor("#7121a6", "#ffffff");
+      if (!excluded.includes(cellRefs.current[crossover].props.title)) {
+        cellRefs.current[crossover].changeColor('#7121a6', '#ffffff');
+      }
     }
     if (verticalColorMemory[0]) {
       cellRefs.current[verticalColorMemory[0]].changeColor(
-        "#9377a6",
-        "#000000"
+        '#9377a6',
+        '#000000'
       );
     }
     for (let n of verticalColorMemory.slice(1)) {
       if (!horizontalColorMemory.includes(n)) {
-        cellRefs.current[n].changeColor("#d7b7ed", "#000000");
+        if (!excluded.includes(cellRefs.current[n].props.title)) {
+          cellRefs.current[n].changeColor('#d7b7ed', '#000000');
+        }
       }
     }
     verticalColorMemory = [];
     let index = 89 + parseInt(value);
     for (let x = index; x > index - 100; x -= 10) {
-      cellRefs.current[x].changeColor("#7121a6", "#ffffff");
-
-      console.log(cellRefs.current[x]);
-      if (horizontalColorMemory.includes(x)) {
-        cellRefs.current[x].changeColor("#580c7a", "#ffffff");
+      if (!excluded.includes(cellRefs.current[x].props.title)) {
+        cellRefs.current[x].changeColor('#7121a6', '#ffffff');
       }
       verticalColorMemory.push(x);
       for (let n of verticalColorMemory) {
         for (let x of horizontalColorMemory) {
           if (x === n) {
-            //    cellRefs.current[x].setAttribute(
-            //     "style",
-            //    "backgroundColor: #580c7a; color: #fff;"
-            //   );
-            crossover = n;
+            if (!excluded.includes(cellRefs.current[x].props.title)) {
+              cellRefs.current[x].changeColor('#580c7a', '#ffffff');
+            }
+            crossover = x;
           }
         }
       }
     }
+    cellRefs.current[index].changeColor('#7121a6', '#ffffff');
   };
 
-  //  const tableLevel = (level) => {
-  //    const obj = Object.getOwnPropertyNames(cellRefs.current[0]);
-  //    console.log(cellRefs.current[0]._nativeTag);
-  //    console.log(cellRefs.current[0]._children);
-  //    console.log(obj);
-  //    axios.post("http://localhost:3000/logs", {
-  //      date: new Date(),
-  //      msg: obj,
-  //    });
-  //    for (let cell of cellRefs.current) {
-  //      let firstNumber = parseInt(cell.key[0]);
-  //      let secondNumber = parseInt(cell.key[1]);
-  //      let value = (firstNumber + 1) * (secondNumber + 1);
-  //      cell.innerHTML = value.toString();
-  //    }
-  //    let toChangeCells = [];
-  //    for (let x = 1; x < level; x++) {
-  //      for (let y = 1; y < level; y++) {
-  //        let _id = x.toString() + y.toString();
-  //        toChangeCells.push(_id);
-  //      }
-  //    }
-  //    for (let val of toChangeCells) {
-  //      for (let x = 0; x < cellRefs.current.length; x++) {
-  //        if (val === cellRefs.current[x].id) {
-  //          cellRefs.current[x].innerHTML = "&#x2666";
-  //        }
-  //      }
-  //    }
-  //  };
-
-  //  useEffect(() => {
-  //    tableLevel(props.level);
-  //  }, [props.level]);
+  const tableLevel = (level) => {
+    let _value = 0;
+    excluded = [];
+    for (let x = 1; x <= level; x++) {
+      for (let y = 1; y <= level; y++) {
+        _value = (x * y).toString();
+        if (!excluded.includes(_value)) {
+          excluded.push(_value);
+        }
+      }
+    }
+    console.log(excluded);
+    console.log(cellRefs.current[2].props.title);
+    for (let cell of cellRefs.current) {
+      if (
+        excluded.includes(cell.props.title) &&
+        cell.props.buttonFunction === 'body'
+      ) {
+        cell.changeColor('#4d0066', 'transparent');
+      }
+    }
+  };
 
   useEffect(() => {
-    for (let n of cellRefs.current) {
-      if (n.props.buttonFunction === "body") {
-        n.changeColor("#d7b7ed", "#000000");
+    console.log('change color');
+    for (let cell of cellRefs.current) {
+      if (cell.props.buttonFunction === 'body') {
+        cell.changeColor('#d7b7ed', '#000000');
       }
     }
   }, []);
+
+  useEffect(() => {
+    console.log('level');
+    tableLevel(props.level);
+  }, [props.level]);
 
   return (
     <View className="tableBody" style={styles.tableBody}>
@@ -196,7 +185,7 @@ const Table = (props) => {
             key={Math.random()}
           >
             {data.map((obj) => {
-              if (obj.function === "vertical") {
+              if (obj.function === 'vertical') {
                 return (
                   <NewTableCell
                     onPress={() => verticalColorHandler(obj.value)}
@@ -206,17 +195,17 @@ const Table = (props) => {
                     title={obj.value.toString()}
                   />
                 );
-              } else if (obj.function === "horizontal") {
+              } else if (obj.function === 'horizontal') {
                 return (
                   <NewTableCell
-                    onPress={horizontalColorHandler}
+                    onPress={() => horizontalColorHandler(obj.value)}
                     key={obj.key}
                     id={obj.id}
                     ref={(el) => (cellRefs.current[obj.id] = el)}
                     title={obj.value.toString()}
                   />
                 );
-              } else if (obj.function === "dummy") {
+              } else if (obj.function === 'dummy') {
                 return (
                   <NewTableCell
                     key={obj.key}
@@ -247,21 +236,21 @@ const Table = (props) => {
 const styles = StyleSheet.create({
   tableBody: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    height: "50%",
-    width: "100%",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    height: '50%',
+    width: '100%',
   },
   tableRow: {
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    width: "100%",
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    width: '100%',
   },
   buttonBody: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
     padding: 10,
   },
 });
