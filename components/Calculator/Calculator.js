@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import NumberPad from "./NumberPad";
 import Screen from "./Screen";
-import MyButton from "../../UI/MyButton";
 
 const Calculator = (props) => {
   const [started, setStarted] = useState(false);
@@ -112,7 +111,10 @@ const Calculator = (props) => {
   };
 
   const enterHandler = () => {
-    if (digits.length < 0 && started) {
+    console.log("digits:", digits);
+    console.log("digits length:", digits.length);
+    console.log(started);
+    if (digits.length > 0 && started) {
       checkProductHandler(digits);
       setStarted(true);
     }
@@ -141,9 +143,7 @@ const Calculator = (props) => {
   // `height: ${barFillHeight}; background-color: #4826b9; transition: all 0.3s ease-out`
   // );
   // }, [products, product]);
-  const testHandler = () => {
-    console.log(test.current);
-  };
+
   return (
     <View className="calculator" style={styles.calculator}>
       <Screen
@@ -153,7 +153,7 @@ const Calculator = (props) => {
         isCorrect={isCorrect}
         digits={digits}
       />
-      <View className="calculator__body">
+      <View className="calculator__body" style={styles.calculatorBody}>
         <View className="scoreBoard">
           <View className="bar__inner">
             <View className="bar__fill" ref={bar}></View>
@@ -167,7 +167,6 @@ const Calculator = (props) => {
           onDelete={deleteHandler}
           onEnter={enterHandler}
         />
-        <MyButton title="test" ref={test} onPress={testHandler} newId="34" />
         <Button
           className="start"
           onPress={!started ? startHandler : stopHandler}
@@ -185,6 +184,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "50%",
+  },
+  calculatorBody: {
+    flex: 1,
+    flexDirection: "row",
   },
 });
 

@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import React, { useRef, useEffect } from "react";
+import { View, Text } from "react-native";
 
 const Screen = (props) => {
   const inputRef = useRef(null);
@@ -22,7 +22,9 @@ const Screen = (props) => {
   return (
     <View className="screen">
       <Text className="product">{props.product}</Text>
-      <Text className="inputAnswer" ref={inputRef}></Text>
+      <Text className="inputAnswer" ref={inputRef}>
+        {props.digits}
+      </Text>
     </View>
   );
 };
