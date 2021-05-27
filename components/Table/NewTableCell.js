@@ -1,13 +1,13 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState } from 'react';
 
-import { StyleSheet, View, Button, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Button, TouchableOpacity, Text } from 'react-native';
 
 class NewTableCell extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      color: "#9377a6",
-      textColor: "#000",
+      color: '#9377a6',
+      textColor: '#000',
     };
     this.changeColor = (color, textColor) => {
       this.setState({ color: color, textColor: textColor });
@@ -28,9 +28,9 @@ class NewTableCell extends Component {
 
     buttonStyles.push({ backgroundColor: this.state.color });
 
-    const setColor = (color) => {
-      buttonStyles.push({ backgroundColor: color });
-    };
+    //    const setColor = (color) => {
+    //      buttonStyles.push({ backgroundColor: color });
+    //    };
 
     return (
       <TouchableOpacity
@@ -50,30 +50,30 @@ class NewTableCell extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "10%",
+    width: '10%',
   },
   button: {
     flex: 1,
     elevation: 4,
-    backgroundColor: "#2196F3",
-    borderStyle: "solid",
+    backgroundColor: '#2196F3',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 2,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "500",
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: '500',
   },
   buttonDisabled: {
     elevation: 0,
-    backgroundColor: "#dfdfdf",
+    backgroundColor: '#dfdfdf',
   },
   textDisabled: {
-    color: "#a1a1a1",
+    color: '#a1a1a1',
   },
 });
 

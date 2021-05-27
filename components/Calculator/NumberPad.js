@@ -1,19 +1,16 @@
-import React from "react";
-import { Button, View, StyleSheet } from "react-native";
+import React from 'react';
+import { Button, View, StyleSheet } from 'react-native';
 
-import NumpadButton from "./NumpadButton";
+import NumpadButton from './NumpadButton';
 
 const NumberPad = (props) => {
   const pressHandler = (digit) => {
-    console.log(digit);
     props.onEnteredDigit(digit);
   };
   const deleteHandler = () => {
-    console.log("delete");
     props.onDelete();
   };
   const enterHandler = () => {
-    console.log("np enter");
     props.onEnter();
   };
   return (
@@ -113,17 +110,17 @@ const NumberPad = (props) => {
 const styles = StyleSheet.create({
   buttonRows: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonRow: {
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

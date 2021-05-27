@@ -1,32 +1,31 @@
-import React, { useRef, useEffect } from "react";
-import { View, Text } from "react-native";
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-const Screen = (props) => {
-  const inputRef = useRef(null);
+class Screen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { color: '#ccd4cb' };
+    this.changeInputColor = (color) => {
+      this.setState({ color: color });
+    };
+  }
 
-  // useEffect(() => {
-  // if (props.isCorrect === 'Correct') {
-  // inputRef.current.setAttribute('style', 'background-color: #79e36d');
-  // setTimeout(() => {
-  // inputRef.current.setAttribute('style', 'background-color: #ccd4cb');
-  // }, 250);
-  // }
-  // if (props.isCorrect === 'Wrong') {
-  // inputRef.current.setAttribute('style', 'background-color: #f75252');
-  // setTimeout(() => {
-  // inputRef.current.setAttribute('style', 'background-color: #ccd4cb');
-  // }, 250);
-  // }
-  // });
+  render() {
+    const styles = StyleSheet.create({
+      input: { backgroundColor: this.state.color },
+    });
 
-  return (
-    <View className="screen">
-      <Text className="product">{props.product}</Text>
-      <Text className="inputAnswer" ref={inputRef}>
-        {props.digits}
-      </Text>
-    </View>
-  );
-};
+    return (
+      <View className="screen">
+        <View>
+          <Text className="product">{this.props.product}</Text>
+        </View>
+        <View style={styles.input}>
+          <Text className="inputAnswer">{this.props.digits}</Text>
+        </View>
+      </View>
+    );
+  }
+}
 
 export default Screen;

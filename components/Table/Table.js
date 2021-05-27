@@ -139,36 +139,37 @@ const Table = (props) => {
   };
 
   const tableLevel = (level) => {
-    let _value = 0;
+    let _id = 0;
     excluded = [];
-    for (let x = 1; x <= level; x++) {
-      for (let y = 1; y <= level; y++) {
-        _value = (x * y).toString();
-        if (!excluded.includes(_value)) {
-          excluded.push(_value);
+    for (let x = 100 - level * 10; x < 100; x + 10) {
+      for (let y = 0; y < level; y + 1) {
+        _id = x + y;
+        if (!excluded.includes(_id)) {
+          excluded.push(_id);
         }
       }
     }
     console.log(excluded);
-    console.log(cellRefs.current[2].props.title);
-    for (let cell of cellRefs.current) {
-      if (
-        excluded.includes(cell.props.title) &&
-        cell.props.buttonFunction === 'body'
-      ) {
-        cell.changeColor('#4d0066', 'transparent');
-      }
-    }
+    //    for (let cell of cellRefs.current) {
+    //      console.log(cell.props.id);
+    //      if (
+    //        excluded.includes(cell.props.id) &&
+    //        cell.props.buttonFunction === 'body'
+    //      ) {
+    //        cell.changeColor('#4d0066', 'transparent');
+    //      }
+    //    }
   };
 
   useEffect(() => {
+    console.log(cellRefs.current[2].props);
     console.log('change color');
     for (let cell of cellRefs.current) {
       if (cell.props.buttonFunction === 'body') {
         cell.changeColor('#d7b7ed', '#000000');
       }
     }
-  }, []);
+  }, [props.level]);
 
   useEffect(() => {
     console.log('level');
