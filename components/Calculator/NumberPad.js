@@ -1,7 +1,7 @@
-import React from "react";
-import { Button, View, StyleSheet } from "react-native";
+import React from 'react';
+import { Button, View, StyleSheet } from 'react-native';
 
-import NumpadButton from "./NumpadButton";
+import CalculatorButton from './CalculatorButton';
 
 const NumberPad = (props) => {
   const pressHandler = (digit) => {
@@ -16,10 +16,10 @@ const NumberPad = (props) => {
   return (
     <View className="numberPad" style={styles.buttonRows}>
       <View style={styles.buttonRow}>
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -27,10 +27,10 @@ const NumberPad = (props) => {
           }}
           title="7"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -38,10 +38,10 @@ const NumberPad = (props) => {
           }}
           title="8"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -51,10 +51,10 @@ const NumberPad = (props) => {
         />
       </View>
       <View style={styles.buttonRow}>
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -62,10 +62,10 @@ const NumberPad = (props) => {
           }}
           title="4"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -73,10 +73,10 @@ const NumberPad = (props) => {
           }}
           title="5"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -86,10 +86,10 @@ const NumberPad = (props) => {
         />
       </View>
       <View style={styles.buttonRow}>
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -97,10 +97,10 @@ const NumberPad = (props) => {
           }}
           title="1"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -108,10 +108,10 @@ const NumberPad = (props) => {
           }}
           title="2"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -121,19 +121,19 @@ const NumberPad = (props) => {
         />
       </View>
       <View buttonFunction="lastRow" style={styles.buttonRow}>
-        <NumpadButton
+        <CalculatorButton
           color="red"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="del"
           buttonBorderFull="1"
           onPress={deleteHandler}
           title="del"
         />
-        <NumpadButton
+        <CalculatorButton
           color="#d4b4ca"
           textColor="black"
-          buttonMargin={"3%"}
+          buttonMargin={'3%'}
           buttonFunction="digit"
           buttonBorderFull="1"
           onPress={() => {
@@ -141,8 +141,8 @@ const NumberPad = (props) => {
           }}
           title="0"
         />
-        <NumpadButton
-          buttonBorderEnter="1"
+        <CalculatorButton
+          buttonBorderEnterLeft="1"
           buttonMarginTop="3%"
           buttonMarginLeft="3%"
           buttonMarginRight="-3%"
@@ -161,21 +161,21 @@ const NumberPad = (props) => {
 const styles = StyleSheet.create({
   numberPad: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   buttonRows: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonRow: {
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
 class CalculatorButton extends Component {
   constructor(props) {
@@ -14,25 +14,48 @@ class CalculatorButton extends Component {
       id,
       color,
       textColor,
+      buttonFunction,
       buttonMargin,
+      buttonMarginLeft,
       buttonMarginRight,
       buttonMarginTop,
       buttonMarginBottom,
       buttonBorderFull,
-      buttonBorderEnter,
+      buttonBorderEnterTop,
+      buttonBorderEnterLeft,
+      buttonBorderEnterBottom,
       flex,
+      width,
+      height,
     } = this.props;
     const buttonStyles = [styles.button];
     const textStyles = [styles.text];
     const containerStyles = [styles.container];
 
-    textStyles.push({ color: textColor });
-
-    buttonStyles.push({ backgroundColor: color });
-
-    if (this.props.height) {
+    if (this.props.flex) {
       containerStyles.push({
         flex: this.props.flex,
+      });
+    }
+    if (this.props.height) {
+      containerStyles.push({
+        height: this.props.height,
+      });
+    }
+    if (this.props.width) {
+      containerStyles.push({
+        width: this.props.width,
+      });
+    }
+    if (this.props.textColor) {
+      textStyles.push({
+        color: textColor,
+      });
+    }
+
+    if (this.props.color) {
+      buttonStyles.push({
+        backgroundColor: color,
       });
     }
     if (this.props.buttonMargin) {
@@ -43,6 +66,11 @@ class CalculatorButton extends Component {
     if (this.props.buttonMarginRight) {
       buttonStyles.push({
         marginRight: this.props.buttonMarginRight,
+      });
+    }
+    if (this.props.buttonMarginLeft) {
+      buttonStyles.push({
+        marginLeft: this.props.buttonMarginLeft,
       });
     }
     if (this.props.buttonMarginTop) {
@@ -57,22 +85,41 @@ class CalculatorButton extends Component {
     }
     if (this.props.buttonBorderFull) {
       buttonStyles.push({
-        borderStyle: "solid",
+        borderStyle: 'solid',
         borderWidth: 1,
-        borderColor: "black",
+        borderColor: 'black',
         borderRadius: 2,
       });
     }
-    if (this.props.buttonBorderEnter) {
+    if (this.props.buttonBorderEnterTop) {
       buttonStyles.push({
-        borderStyle: "solid",
+        borderStyle: 'solid',
         borderRightWidth: 1,
-        borderBottomWidth: 1,
+        borderLeftWidth: 1,
         borderTopWidth: 1,
         borderTopLeftRadius: 2,
         borderTopRightRadius: 2,
+        borderColor: 'black',
+      });
+    }
+    if (this.props.buttonBorderEnterBottom) {
+      buttonStyles.push({
+        borderStyle: 'solid',
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
         borderBottomRightRadius: 2,
-        borderColor: "black",
+        borderColor: 'black',
+      });
+    }
+    if (this.props.buttonBorderEnterLeft) {
+      buttonStyles.push({
+        borderStyle: 'solid',
+        borderLeftWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        borderTopLeftRadius: 2,
+        borderBottomLeftRadius: 2,
+        borderColor: 'black',
       });
     }
     return (
@@ -83,12 +130,18 @@ class CalculatorButton extends Component {
         textColor={textColor}
         color={color}
         flex={flex}
+        width={width}
+        height={height}
+        buttonFunction={buttonFunction}
         buttonMargin={buttonMargin}
+        buttonMarginLeft={buttonMarginRight}
         buttonMarginRight={buttonMarginRight}
         buttonMarginTop={buttonMarginTop}
         buttonMarginBottom={buttonMarginBottom}
         buttonBorderFull={buttonBorderFull}
-        buttonBorderEnter={buttonBorderEnter}
+        buttonBorderEnterTop={buttonBorderEnterTop}
+        buttonBorderEnterBottom={buttonBorderEnterBottom}
+        buttonBorderEnterLeft={buttonBorderEnterLeft}
       >
         <View style={buttonStyles}>
           <Text style={textStyles}>{title}</Text>
@@ -101,25 +154,27 @@ class CalculatorButton extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "stretch",
+    alignItems: 'stretch',
   },
   button: {
+    flex: 1,
     elevation: 4,
-    backgroundColor: "#2196F3",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#2196F3',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
   },
   text: {
-    textAlign: "center",
-    color: "white",
-    fontWeight: "500",
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: '500',
   },
   buttonDisabled: {
     elevation: 0,
-    backgroundColor: "#dfdfdf",
+    backgroundColor: '#dfdfdf',
   },
   textDisabled: {
-    color: "#a1a1a1",
+    color: '#a1a1a1',
   },
 });
 
