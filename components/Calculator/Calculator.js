@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,19 +8,22 @@ import {
   useColorScheme,
   View,
   Button,
-} from 'react-native';
-import NumberPad from './NumberPad';
-import Screen from './Screen';
+} from "react-native";
+import NumberPad from "./NumberPad";
+import Screen from "./Screen";
+import ScoreTracker from "./ScoreTracker";
+import Timer from "./Timer";
+import CalculatorButton from "./CalculatorButton";
 
 const Calculator = (props) => {
   const [started, setStarted] = useState(false);
-  const [product, setProduct] = useState('');
+  const [product, setProduct] = useState("");
   const [products, setProducts] = useState([]);
-  const [isCorrect, setIsCorrect] = useState('');
-  const [digits, setDigits] = useState('');
-  const [timerFlag, setTimerFlag] = useState('stop');
+  const [isCorrect, setIsCorrect] = useState("");
+  const [digits, setDigits] = useState("");
+  const [timerFlag, setTimerFlag] = useState("stop");
 
-  const bar = useRef();
+  const scoreTrackerRef = useRef();
   const screenRef = useRef();
 
   const generateProducts = () => {
@@ -28,10 +31,10 @@ const Calculator = (props) => {
     for (let n = 2; n < 11; n++) {
       for (let m = 2; m < 11; m++) {
         if (
-          !newProducts.includes(n + ' ✕ ' + m) &&
-          !newProducts.includes(m + ' ✕ ' + n)
+          !newProducts.includes(n + " ✕ " + m) &&
+          !newProducts.includes(m + " ✕ " + n)
         ) {
-          newProducts.push(n + ' ✕ ' + m);
+          newProducts.push(n + " ✕ " + m);
         }
       }
     }
@@ -42,12 +45,12 @@ const Calculator = (props) => {
     let productsArray = [...products];
     if (productsArray.length < 1) {
       productsArray = generateProducts();
-      props.onChangeLevel('up');
+      props.onChangeLevel("up");
     }
     if (productsArray.length >= 50) {
       productsArray = generateProducts();
 
-      props.onChangeLevel('down');
+      props.onChangeLevel("down");
     }
     const randomIndex = Math.floor(Math.random() * productsArray.length);
     const newProduct = productsArray.splice(randomIndex, 1);
@@ -58,47 +61,47 @@ const Calculator = (props) => {
   const startHandler = () => {
     if (!started) {
       setStarted(true);
-      setTimerFlag('start');
+      setTimerFlag("start");
       generateProduct();
     }
   };
 
   const stopHandler = () => {
     if (started) {
-      setDigits('');
+      setDigits("");
       setProducts([product, ...products]);
       setStarted(false);
-      setTimerFlag('stop');
+      setTimerFlag("stop");
     }
   };
 
   const checkProductHandler = (answer) => {
-    const numbers = product.split(' ✕ ');
+    const numbers = product.split(" ✕ ");
     const result = parseInt(numbers[0]) * parseInt(numbers[1]);
     if (parseInt(answer) === result) {
-      setDigits('');
+      setDigits("");
       //      setIsCorrect('Correct');
-      screenRef.current.changeInputColor('#79e36d');
+      screenRef.current.changeInputColor("#79e36d");
       setTimeout(() => {
-        screenRef.current.changeInputColor('#ccd4cb');
+        screenRef.current.changeInputColor("#ccd4cb");
         //        setIsCorrect('');
       }, 250);
       generateProduct();
       console.log(products.length);
-      if (timerFlag === 'reset-on') {
-        setTimerFlag('reset-off');
+      if (timerFlag === "reset-on") {
+        setTimerFlag("reset-off");
       } else {
-        setTimerFlag('reset-on');
+        setTimerFlag("reset-on");
       }
     } else {
-      screenRef.current.changeInputColor('#f75252');
+      screenRef.current.changeInputColor("#f75252");
       //      setIsCorrect('Wrong');
       setProducts([product, ...products]);
       if (products.length >= 50) {
         generateProduct();
       }
       setTimeout(() => {
-        screenRef.current.changeInputColor('#ccd4cb');
+        screenRef.current.changeInputColor("#ccd4cb");
         //        setIsCorrect('');
       }, 250);
     }
@@ -123,45 +126,61 @@ const Calculator = (props) => {
     }
   };
 
-  // cyonst manualEnterHandler = (newDigits) => {
-  // if (started) {
-  // if (newDigits.length < 4) {
-  // setDigits(newDigits);
-  // }
-  // }
-  // };
-
-  // useEffect(() => {
-  // let barFillHeight = Math.round((products.length / 50) * 100) + '%';
-
-  // bar.current.setAttribute(
-  // 'style',
-  // `height: ${barFillHeight}; background-color: #4826b9; transition: all 0.3s ease-out`
-  // );
-  // }, [products, product]);
+  useEffect(() => {
+    let barFillHeight = Math.round((products.length / 50) * 100) + "%";
+    scoreTrackerRef.current.changeHeight(barFillHeight.toString());
+    console.log(scoreTrackerRef.current);
+  }, [products, product]);
 
   return (
     <View className="calculator" style={styles.calculator}>
       <Screen ref={screenRef} product={product} digits={digits} key="screen" />
-      <View className="calculator__body" style={styles.calculatorBody}>
-        <View className="scoreBoard">
-          <View className="bar__inner">
-            <View className="bar__fill" ref={bar}></View>
-          </View>
-          <Text className="level">{`Level: ${props.level}`}</Text>
-        </View>
+      <View style={styles.calculatorBody}>
+        <ScoreTracker
+          style={styles.scoreTracker}
+          ref={scoreTrackerRef}
+          level={props.level}
+        />
+        <Timer style={styles.timer} timerFlag={timerFlag} />
         <NumberPad
-          className="numberPad"
+          style={styles.numberPad}
           digits={digits}
           onEnteredDigit={enteredDigitsHandler}
           onDelete={deleteHandler}
           onEnter={enterHandler}
         />
-        <Button
-          className="start"
-          onPress={!started ? startHandler : stopHandler}
-          title={!started ? 'START' : 'STOP'}
-        />
+        <View style={styles.start}>
+          <CalculatorButton
+            flex={2}
+            buttonMargin="3%"
+            buttonBorderFull="1"
+            color="black"
+            textColor="white"
+            onPress={!started ? startHandler : stopHandler}
+            title={!started ? "START" : "STOP"}
+          />
+
+          <CalculatorButton
+            flex={1}
+            color="#8bbd88"
+            onPress={enterHandler}
+            buttonMarginTop="3%"
+            buttonMargin="3%"
+            buttonMarginRight="3%"
+            buttonBorderEnter="1"
+            title=""
+          />
+          <CalculatorButton
+            flex={1}
+            color="#8bbd88"
+            onPress={enterHandler}
+            buttonMarginTop="3%"
+            buttonMarginBottom="3%"
+            buttonMarginRight="3%"
+            buttonBorderEnter="1"
+            title=""
+          />
+        </View>
       </View>
     </View>
   );
@@ -170,14 +189,17 @@ const Calculator = (props) => {
 const styles = StyleSheet.create({
   calculator: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '50%',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "50%",
   },
   calculatorBody: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
+  },
+  start: {
+    flex: 0.3,
   },
 });
 

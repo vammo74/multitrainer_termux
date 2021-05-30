@@ -1,24 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import {
   SafeAreaView,
   SafeAreaProvider,
   SafeAreaInsetsContext,
   useSafeAreaInsets,
   initialWindowMetrics,
-} from 'react-native-safe-area-context';
-import Calculator from './components/Calculator/Calculator';
-import Table from './components/Table/Table';
+} from "react-native-safe-area-context";
+import Calculator from "./components/Calculator/Calculator";
+import Table from "./components/Table/Table";
 
 const App = () => {
   const [level, setLevel] = useState(3);
 
   const changeLevelHandler = (flag) => {
-    if (flag === 'up' && level <= 10) {
+    if (flag === "up" && level <= 10) {
       setLevel((prevLevel) => prevLevel + 1);
     }
-    if (flag === 'down' && level > 0) {
+    if (flag === "down" && level > 0) {
       setLevel((prevLevel) => prevLevel - 1);
       console.log(flag);
       console.log(level);
@@ -40,12 +40,12 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 0.9,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: '70%',
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    margin: "5%",
   },
 });
 

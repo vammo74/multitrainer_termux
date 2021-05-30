@@ -1,21 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useInterval } from '../helpers/useInterval';
+import React, { useEffect, useRef, useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { useInterval } from "../helpers/useInterval";
 
 const Timer = (props) => {
   const timer = useRef();
   const [timerHeight, setTimerHeight] = useState(0);
   const [timerState, setTimerState] = useState(true);
 
-  console.log('timer');
+  console.log("timer");
 
   useEffect(() => {
-    if (props.timerFlag === 'start') {
+    if (props.timerFlag === "start") {
       setTimerState(true);
       setTimerHeight(0);
-    } else if (props.timerFlag === 'reset-on') {
+    } else if (props.timerFlag === "reset-on") {
       setTimerState(true);
       setTimerHeight((t) => t - 10);
-    } else if (props.timerFlag === 'reset-off') {
+    } else if (props.timerFlag === "reset-off") {
       setTimerState(true);
       setTimerHeight((t) => t - 10);
     } else {
@@ -35,17 +36,40 @@ const Timer = (props) => {
     }
   }, 500);
 
+  const timerFillStyles = StyleSheet.create({
+    timerFill: {
+      borderWidth: 1,
+      borderStyle: "solid",
+      borderColor: "#000000",
+      backgroundColor: "red",
+      height: timerHeight + "%",
+    },
+  });
+
+  const timerResetStyles = StyleSheet.create({
+    timerReset: {
+      backgroundColor: "red",
+    },
+  });
+
   return (
-    <View className="timer">
-      <View className="timer__bar">
-        <View
-          className={timerState !== 'stop' ? 'timer__fill' : 'timer__reset'}
-          style={{ height: timerHeight.toString() + '%' }}
-          ref={timer}
-        ></View>
-      </View>
+    <View style={styles.timer}>
+      <View
+        style={
+          timerState !== "stop"
+            ? timerFillStyles.timerFill
+            : timerResetStyles.timerReset
+        }
+        ref={timer}
+      ></View>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  timer: {
+    flex: 0.2,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+  },
+});
 export default Timer;
