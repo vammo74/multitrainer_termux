@@ -4,7 +4,6 @@ import { StyleSheet, View } from "react-native";
 
 import NewTableCell from "./NewTableCell";
 import TableCell from "./TableCell";
-import TableButton from "./TableButton";
 
 let horizontalColorMemory = [];
 let verticalColorMemory = [];
@@ -63,96 +62,103 @@ const Table = (props) => {
   const horizontalColorHandler = (value) => {
     if (crossover) {
       if (!excluded.includes(cellRefs.current[crossover].props.id)) {
-        cellRefs.current[crossover].activateCell();
+        cellRefs.current[crossover].changeColor("#7121a6", "#ffffff");
       }
     }
     if (horizontalColorMemory[0] >= 0) {
-      cellRefs.current[horizontalColorMemory[0]].deactivateCell();
+      cellRefs.current[horizontalColorMemory[0]].changeColor(
+        "#9377a6",
+        "#000000"
+      );
     }
     for (let n of horizontalColorMemory.slice(1)) {
       if (!verticalColorMemory.includes(n)) {
         if (!excluded.includes(cellRefs.current[n].props.id)) {
-          cellRefs.current[n].deactivateCell();
+          cellRefs.current[n].changeColor("#d7b7ed", "#000000");
         }
       }
     }
 
     horizontalColorMemory = [];
     let index = (10 - parseInt(value)) * 10;
-    horizontalColorMemory.push(index);
-    for (let x = index + 1; x < index + 10; x++) {
+    for (let x = index; x < index + 10; x++) {
       if (!excluded.includes(cellRefs.current[x].props.id)) {
-        cellRefs.current[x].activateCell();
+        cellRefs.current[x].changeColor("#7121a6", "#ffffff");
       }
       horizontalColorMemory.push(x);
       for (let n of horizontalColorMemory) {
         for (let x of verticalColorMemory) {
           if (x === n) {
             if (!excluded.includes(cellRefs.current[x].props.id)) {
-              cellRefs.current[x].activateCrossedCell();
+              cellRefs.current[x].changeColor("#580c7a", "#ffffff");
             }
             crossover = x;
           }
         }
       }
     }
+    cellRefs.current[index].changeColor("#7121a6", "#ffffff");
   };
 
   const verticalColorHandler = (value) => {
     if (crossover) {
       if (!excluded.includes(cellRefs.current[crossover].props.id)) {
-        cellRefs.current[crossover].activateCell();
+        cellRefs.current[crossover].changeColor("#7121a6", "#ffffff");
       }
     }
     if (verticalColorMemory[0]) {
-      cellRefs.current[verticalColorMemory[0]].deactivateCell();
+      cellRefs.current[verticalColorMemory[0]].changeColor(
+        "#9377a6",
+        "#000000"
+      );
     }
     for (let n of verticalColorMemory.slice(1)) {
       if (!horizontalColorMemory.includes(n)) {
         if (!excluded.includes(cellRefs.current[n].props.id)) {
-          cellRefs.current[n].deactivateCell();
+          cellRefs.current[n].changeColor("#d7b7ed", "#000000");
         }
       }
     }
     verticalColorMemory = [];
     let index = 89 + parseInt(value);
-    verticalColorMemory.push(index);
-    for (let x = index - 10; x > index - 100; x -= 10) {
+    for (let x = index; x > index - 100; x -= 10) {
       if (!excluded.includes(cellRefs.current[x].props.id)) {
-        cellRefs.current[x].activateCell();
+        cellRefs.current[x].changeColor("#7121a6", "#ffffff");
       }
       verticalColorMemory.push(x);
       for (let n of verticalColorMemory) {
         for (let x of horizontalColorMemory) {
           if (x === n) {
             if (!excluded.includes(cellRefs.current[x].props.id)) {
-              cellRefs.current[x].activateCrossedCell();
+              cellRefs.current[x].changeColor("#580c7a", "#ffffff");
             }
             crossover = x;
           }
         }
       }
     }
+    cellRefs.current[index].changeColor("#7121a6", "#ffffff");
   };
 
   const tableLevel = (level) => {
-    for (let cell of cellRefs.current) {
-      if (excluded.includes(cell.props.id)) {
-        cell.deactivateCell();
-      }
-    }
-
     let _id = 0;
     excluded = [];
-    for (let x = 10 - props.level; x < 9; x++) {
-      for (let y = 1; y < level; y += 1) {
-        _id = x.toString() + y.toString();
-        excluded.push(parseInt(_id));
+    for (let x = 100 - level * 10; x < 100; x += 10) {
+      for (let y = 0; y < level; y += 1) {
+        _id = x + y;
+        excluded.push(_id);
       }
     }
     for (let cell of cellRefs.current) {
-      if (excluded.includes(cell.props.id)) {
-        cell.excludeCell();
+      if (
+        excluded.includes(cell.props.id) &&
+        cell.props.buttonFunction === "body"
+      ) {
+        cell.changeColor("#4d0066", "transparent");
+      } else if (cell.props.buttonFunction === "toggle") {
+        cell.changeColor("#9377a6", "#000000");
+      } else {
+        cell.changeColor("#d7b7ed", "#000000");
       }
     }
   };
@@ -173,7 +179,7 @@ const Table = (props) => {
             {data.map((obj) => {
               if (obj.function === "vertical") {
                 return (
-                  <TableButton
+                  <NewTableCell
                     onPress={() => verticalColorHandler(obj.value)}
                     key={obj.key}
                     id={obj.id}
@@ -184,7 +190,7 @@ const Table = (props) => {
                 );
               } else if (obj.function === "horizontal") {
                 return (
-                  <TableButton
+                  <NewTableCell
                     onPress={() => horizontalColorHandler(obj.value)}
                     key={obj.key}
                     id={obj.id}
@@ -195,8 +201,7 @@ const Table = (props) => {
                 );
               } else if (obj.function === "dummy") {
                 return (
-                  <TableButton
-                    disabled={true}
+                  <NewTableCell
                     key={obj.key}
                     id={obj.id}
                     ref={(el) => (cellRefs.current[obj.id] = el)}
@@ -206,7 +211,7 @@ const Table = (props) => {
                 );
               } else {
                 return (
-                  <TableCell
+                  <NewTableCell
                     key={obj.key}
                     id={obj.id}
                     buttonFunction={obj.type}

@@ -4,14 +4,15 @@ import { StyleSheet, Text, View } from "react-native";
 class ScoreTracker extends Component {
   constructor(props) {
     super(props);
-    this.state = { trackerHeight: "30%" };
+    this.state = { trackerHeight: "0%", color: "#4da6ff" };
+    this.changeTrackerColor = (newColor) => {
+      this.setState({ color: newColor });
+    };
     this.changeHeight = (newHeight) => {
       this.setState({ trackerHeight: newHeight });
     };
   }
-
   render() {
-    console.log("remount");
     const barFillStyles = StyleSheet.create({
       empty: {},
       barFill: {
@@ -20,17 +21,25 @@ class ScoreTracker extends Component {
         borderColor: "black",
         height: this.state.trackerHeight,
         width: "100%",
-        backgroundColor: "blue",
+        backgroundColor: this.state.color,
       },
     });
-
-    console.log(barFillStyles);
 
     return (
       <View style={styles.scoreTracker}>
         <View style={barFillStyles.barFill}></View>
-        <Text>Level:</Text>
-        <Text>{this.props.level}</Text>
+
+        <View
+          style={{
+            height: "15%",
+            alignItems: "center",
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text>Level</Text>
+          <Text>{this.props.level}</Text>
+        </View>
       </View>
     );
   }
@@ -43,7 +52,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
     justifyContent: "flex-end",
     flexDirection: "column",
-    flex: 0.2,
+    flex: 1,
   },
 });
 

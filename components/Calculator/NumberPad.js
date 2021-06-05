@@ -1,9 +1,31 @@
-import React from 'react';
-import { Button, View, StyleSheet } from 'react-native';
+import React, { useRef } from "react";
+import { Button, View, StyleSheet } from "react-native";
 
-import CalculatorButton from './CalculatorButton';
+import LButtonTop from "./LButtonTop";
+import LButtonBottom from "./LButtonBottom";
+import LButtonLeft from "./LButtonLeft";
+import IButtonTop from "./IButtonTop";
+import IButtonBottom from "./IButtonBottom";
+import NormalButton from "./NormalButton";
+import DelButton from "./DelButton";
 
 const NumberPad = (props) => {
+  const LBBRef = useRef(null);
+  const LBTRef = useRef(null);
+  const LBLRef = useRef(null);
+  const IBTRef = useRef(null);
+  const IBBRef = useRef(null);
+
+  const pressInLinkedHandler = (linkedButtons) => {
+    for (let button of linkedButtons) {
+      button.current.pressInHandler();
+    }
+  };
+  const pressOutLinkedHandler = (linkedButtons) => {
+    for (let button of linkedButtons) {
+      button.current.pressOutHandler();
+    }
+  };
   const pressHandler = (digit) => {
     props.onEnteredDigit(digit);
   };
@@ -14,144 +36,132 @@ const NumberPad = (props) => {
     props.onEnter();
   };
   return (
-    <View className="numberPad" style={styles.buttonRows}>
+    <View style={styles.mainGrid}>
       <View style={styles.buttonRow}>
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(7);
           }}
           title="7"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(8);
           }}
           title="8"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(9);
           }}
           title="9"
         />
+        <IButtonTop
+          ref={IBTRef}
+          title={!props.started ? "G" : "ST"}
+          onPressIn={() => {
+            pressInLinkedHandler([IBBRef]);
+          }}
+          onPressOut={() => {
+            pressOutLinkedHandler([IBBRef]);
+          }}
+          onPress={props.onStart}
+          started={props.started}
+        />
       </View>
       <View style={styles.buttonRow}>
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(4);
           }}
           title="4"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(5);
           }}
           title="5"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(6);
           }}
           title="6"
         />
+        <IButtonBottom
+          ref={IBBRef}
+          title={!props.started ? "O" : "OP"}
+          onPress={props.onStart}
+          onPressIn={() => {
+            pressInLinkedHandler([IBTRef]);
+          }}
+          onPressOut={() => {
+            pressOutLinkedHandler([IBTRef]);
+          }}
+          started={props.started}
+        />
       </View>
       <View style={styles.buttonRow}>
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(1);
           }}
           title="1"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(2);
           }}
           title="2"
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+        <NormalButton
           onPress={() => {
             pressHandler(3);
           }}
           title="3"
         />
-      </View>
-      <View buttonFunction="lastRow" style={styles.buttonRow}>
-        <CalculatorButton
-          color="red"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="del"
-          buttonBorderFull="1"
-          onPress={deleteHandler}
-          title="del"
+        <LButtonTop
+          ref={LBTRef}
+          onPress={enterHandler}
+          onPressIn={() => {
+            pressInLinkedHandler([LBBRef, LBLRef]);
+          }}
+          onPressOut={() => {
+            pressOutLinkedHandler([LBBRef, LBLRef]);
+          }}
+          title=""
         />
-        <CalculatorButton
-          color="#d4b4ca"
-          textColor="black"
-          buttonMargin={'3%'}
-          buttonFunction="digit"
-          buttonBorderFull="1"
+      </View>
+      <View buttonFunction="lastRow" style={styles.lastButtonRow}>
+        <DelButton onPress={deleteHandler} title="del" />
+        <NormalButton
+          flex={0.93}
           onPress={() => {
             pressHandler(0);
           }}
           title="0"
         />
-        <CalculatorButton
-          buttonBorderEnterLeft="1"
-          buttonMarginTop="3%"
-          buttonMarginLeft="3%"
-          buttonMarginRight="-3%"
-          buttonMarginBottom="3%"
-          color="#8bbd88"
-          textColor="black"
-          buttonFunction="enter"
+        <LButtonLeft
+          ref={LBLRef}
           onPress={enterHandler}
+          onPressIn={() => {
+            pressInLinkedHandler([LBTRef, LBBRef]);
+          }}
+          onPressOut={() => {
+            pressOutLinkedHandler([LBTRef, LBBRef]);
+          }}
           title="enter"
+        />
+        <LButtonBottom
+          ref={LBBRef}
+          onPress={enterHandler}
+          onPressIn={() => {
+            pressInLinkedHandler([LBTRef, LBLRef]);
+          }}
+          onPressOut={() => {
+            pressOutLinkedHandler([LBTRef, LBLRef]);
+          }}
+          title=""
         />
       </View>
     </View>
@@ -159,23 +169,27 @@ const NumberPad = (props) => {
 };
 
 const styles = StyleSheet.create({
-  numberPad: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  buttonRows: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  mainGrid: {
+    flex: 6,
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonRow: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lastButtonRow: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: -1,
   },
 });
 

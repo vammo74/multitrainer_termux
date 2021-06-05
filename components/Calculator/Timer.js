@@ -2,26 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useInterval } from "../helpers/useInterval";
 
+let colorModifier = 1;
+
 const Timer = (props) => {
   const timer = useRef();
-  const [timerHeight, setTimerHeight] = useState(0);
+  const [timerHeight, setTimerHeight] = useState(props.timerInitialHeight);
   const [timerState, setTimerState] = useState(true);
-
-  console.log("timer");
 
   useEffect(() => {
     if (props.timerFlag === "start") {
       setTimerState(true);
-      setTimerHeight(0);
-    } else if (props.timerFlag === "reset-on") {
-      setTimerState(true);
-      setTimerHeight((t) => t - 10);
-    } else if (props.timerFlag === "reset-off") {
-      setTimerState(true);
-      setTimerHeight((t) => t - 10);
-    } else {
+    } else if (props.timerFlag === "stop") {
       setTimerState(false);
-      setTimerHeight(0);
+    } else {
+      setTimerState(true);
+      setTimerHeight((t) => t - 10);
+      if (timerHeight < 0) {
+        setTimerHeight(0);
+      }
     }
   }, [props.timerFlag]);
 
@@ -34,14 +32,26 @@ const Timer = (props) => {
         setTimerState(false);
       }
     }
-  }, 500);
+  }, 1000);
 
+  useEffect(() => {
+    return () => {
+      props.onRecordTimer(timerHeight);
+    };
+  });
+
+  colorModifier = timerHeight;
+  if (colorModifier <= 0) {
+    colorModifier = 1;
+  }
   const timerFillStyles = StyleSheet.create({
     timerFill: {
       borderWidth: 1,
       borderStyle: "solid",
-      borderColor: "#000000",
-      backgroundColor: "red",
+      borderColor: "#000",
+      backgroundColor: `rgb(${255 * (colorModifier / 100)}, 0, ${
+        200 * (1 / (colorModifier + 1))
+      })`,
       height: timerHeight + "%",
     },
   });
@@ -67,7 +77,12 @@ const Timer = (props) => {
 };
 const styles = StyleSheet.create({
   timer: {
-    flex: 0.2,
+    marginLeft: "2%",
+    marginRight: "2%",
+    borderColor: "black",
+    borderStyle: "solid",
+    borderWidth: 1,
+    flex: 1,
     flexDirection: "column",
     justifyContent: "flex-end",
   },

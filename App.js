@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Button, AppState } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   SafeAreaView,
   SafeAreaProvider,
@@ -20,16 +21,17 @@ const App = () => {
     }
     if (flag === "down" && level > 0) {
       setLevel((prevLevel) => prevLevel - 1);
-      console.log(flag);
-      console.log(level);
     }
   };
-
+  const updateLevelHandler = (newLevel) => {
+    setLevel(newLevel);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Table level={level} />
       <Calculator
         level={level}
+        onUpdateLevel={updateLevelHandler}
         onChangeLevel={(flag) => changeLevelHandler(flag)}
       />
       <StatusBar style="auto" />
