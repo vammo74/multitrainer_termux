@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from "react";
 
 import { StyleSheet, View } from "react-native";
 
-import NewTableCell from "./NewTableCell";
 import TableCell from "./TableCell";
 import TableButton from "./TableButton";
 
