@@ -6,17 +6,19 @@ let colorModifier = 1;
 
 const Timer = (props) => {
   const timer = useRef();
-  const [timerHeight, setTimerHeight] = useState(props.timerInitialHeight);
+  const [timerHeight, setTimerHeight] = useState(0);
   const [timerState, setTimerState] = useState(true);
 
   useEffect(() => {
     if (props.timerFlag === "start") {
       setTimerState(true);
+      setTimerHeight(0);
     } else if (props.timerFlag === "stop") {
       setTimerState(false);
+      setTimerHeight(0);
     } else {
       setTimerState(true);
-      setTimerHeight((t) => t - 10);
+      setTimerHeight(0);
       if (timerHeight < 0) {
         setTimerHeight(0);
       }
@@ -32,13 +34,7 @@ const Timer = (props) => {
         setTimerState(false);
       }
     }
-  }, 1000);
-
-  useEffect(() => {
-    return () => {
-      props.onRecordTimer(timerHeight);
-    };
-  });
+  }, 10 * (101 - props.level ** 2));
 
   colorModifier = timerHeight;
   if (colorModifier <= 0) {

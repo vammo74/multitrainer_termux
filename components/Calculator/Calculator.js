@@ -8,14 +8,14 @@ import Timer from "./Timer";
 
 const Calculator = (props) => {
   const [savedStats, setSavedStats] = useState(
-    '{"level":4,"product":"","products":["5 ✕ 9","5 ✕ 8","4 ✕ 7","2 ✕ 2","2 ✕ 3","2 ✕ 4","2 ✕ 5","2 ✕ 6","2 ✕ 7","2 ✕ 8","2 ✕ 9","2 ✕ 10","3 ✕ 3","3 ✕ 4","3 ✕ 5","3 ✕ 6","3 ✕ 7","3 ✕ 8","3 ✕ 9","4 ✕ 4","4 ✕ 5","4 ✕ 6","4 ✕ 8","4 ✕ 9","4 ✕ 10","5 ✕ 5","5 ✕ 6","5 ✕ 7","5 ✕ 10","6 ✕ 6","6 ✕ 7","6 ✕ 8","6 ✕ 9","6 ✕ 10","7 ✕ 7","7 ✕ 8","7 ✕ 9","7 ✕ 10","8 ✕ 8","8 ✕ 9","8 ✕ 10","9 ✕ 9","9 ✕ 10","10 ✕ 10"],"timerInitialHeight":0}'
+    '{"level":4,"product":"","products":["5 ✕ 9","5 ✕ 8","4 ✕ 7","2 ✕ 2","2 ✕ 3","2 ✕ 4","2 ✕ 5","2 ✕ 6","2 ✕ 7","2 ✕ 8","2 ✕ 9","2 ✕ 10","3 ✕ 3","3 ✕ 4","3 ✕ 5","3 ✕ 6","3 ✕ 7","3 ✕ 8","3 ✕ 9","4 ✕ 4","4 ✕ 5","4 ✕ 6","4 ✕ 8","4 ✕ 9","4 ✕ 10","5 ✕ 5","5 ✕ 6","5 ✕ 7","5 ✕ 10","6 ✕ 6","6 ✕ 7","6 ✕ 8","6 ✕ 9","6 ✕ 10","7 ✕ 7","7 ✕ 8","7 ✕ 9","7 ✕ 10","8 ✕ 8","8 ✕ 9","8 ✕ 10","9 ✕ 9","9 ✕ 10","10 ✕ 10"],"levelAttempts":0}'
   );
+  const [levelAttempts, setLevelAttempts] = useState(0);
   const [started, setStarted] = useState(false);
   const [product, setProduct] = useState("");
   const [products, setProducts] = useState([]);
   const [digits, setDigits] = useState("");
   const [timerFlag, setTimerFlag] = useState("stop");
-  const [timerInitialHeight, setTimerInitialHeight] = useState(0);
 
   const scoreTrackerRef = useRef();
   const screenRef = useRef();
@@ -32,7 +32,6 @@ const Calculator = (props) => {
     try {
       const value = await AsyncStorage.getItem("@storage_Key");
       if (value !== null) {
-        console.log(value);
         setSavedStats(value);
       }
     } catch (e) {
@@ -43,7 +42,6 @@ const Calculator = (props) => {
   const _handleAppStateChange = (nextAppState) => {
     if (nextAppState === "background" || nextAppState === "inactive") {
       saveStats(savedStats);
-      console.log("unmount");
     }
   };
 
@@ -53,10 +51,8 @@ const Calculator = (props) => {
     let statsJson = JSON.parse(savedStats);
     setProduct(statsJson.product);
     setProducts(statsJson.products);
-    setTimerInitialHeight(statsJson.timerInitialHeight);
+    setLevelAttempts(statsJson.levelAttempts);
     props.onUpdateLevel(statsJson.level);
-    console.log(savedStats);
-    console.log("mount");
 
     return () => {
       AppState.removeEventListener("change", _handleAppStateChange);
@@ -68,10 +64,9 @@ const Calculator = (props) => {
       level: props.level,
       product: product,
       products: products,
-      timerInitialHeight: timerInitialHeight,
+      levelAttempts: levelAttempts,
     };
     let stats = JSON.stringify(statsJson);
-    console.log(stats);
     setSavedStats(stats);
   }, [props.level, product, products]);
 
@@ -112,6 +107,7 @@ const Calculator = (props) => {
       setStarted(true);
       setTimerFlag("start");
       generateProduct();
+      screenRef.current.changeTextColor("black");
     }
   };
 
@@ -119,6 +115,7 @@ const Calculator = (props) => {
     if (started) {
       setDigits("");
       setProducts([product, ...products]);
+      screenRef.current.changeTextColor("transparent");
       setStarted(false);
       setTimerFlag("stop");
     }
@@ -145,8 +142,14 @@ const Calculator = (props) => {
       if (products.length >= 50) {
         generateProduct();
       }
+      if (timerFlag === "reset-on") {
+        setTimerFlag("reset-off");
+      } else {
+        setTimerFlag("reset-on");
+      }
       setTimeout(() => {
         screenRef.current.changeInputColor("#ccd4cb");
+        setDigits("");
       }, 250);
     }
   };
@@ -154,6 +157,8 @@ const Calculator = (props) => {
   const deleteHandler = () => {
     if (digits.length > 0 && started) {
       setDigits((prevDigits) => prevDigits.slice(0, -1));
+    } else {
+      setDigits("");
     }
   };
 
@@ -162,16 +167,20 @@ const Calculator = (props) => {
       checkProductHandler(digits);
       setStarted(true);
     }
-  };
-
-  const enteredDigitsHandler = (newDigit) => {
-    if (digits.length < 3 && started) {
-      setDigits((prevDigits) => prevDigits + newDigit);
+    if (digits.length === 3 && !started && digits.slice(0, 2) === "13") {
+      props.onUpdateLevel(digits[2]);
+      setProducts(generateProducts());
+      setDigits("");
+    }
+    if (!started) {
+      setDigits("");
     }
   };
 
-  const recordTimerHandler = (timerHeight) => {
-    setTimerInitialHeight(timerHeight);
+  const enteredDigitsHandler = (newDigit) => {
+    if (digits.length < 3) {
+      setDigits((prevDigits) => prevDigits + newDigit);
+    }
   };
 
   useEffect(() => {
@@ -202,12 +211,7 @@ const Calculator = (props) => {
           ref={scoreTrackerRef}
           level={props.level}
         />
-        <Timer
-          style={styles.timer}
-          timerFlag={timerFlag}
-          onRecordTimer={recordTimerHandler}
-          timerInitialHeight={timerInitialHeight}
-        />
+        <Timer style={styles.timer} timerFlag={timerFlag} level={props.level} />
         <NumberPad
           style={styles.numberPad}
           digits={digits}

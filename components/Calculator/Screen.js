@@ -4,9 +4,12 @@ import { View, Text, StyleSheet } from "react-native";
 class Screen extends Component {
   constructor(props) {
     super(props);
-    this.state = { color: "#ccd4cb" };
+    this.state = { color: "#ccd4cb", textColor: "transparent" };
     this.changeInputColor = (color) => {
       this.setState({ color: color });
+    };
+    this.changeTextColor = (color) => {
+      this.setState({ textColor: color });
     };
   }
 
@@ -22,13 +25,21 @@ class Screen extends Component {
       },
     });
 
+    const textStyles = StyleSheet.create({
+      text: {
+        color: this.state.textColor,
+        textAlign: "center",
+        fontSize: 40,
+      },
+    });
+
     return (
       <View style={styles.screenContainer}>
-        <View style={styles.productScreen}>
-          <Text style={styles.text}>{this.props.product}</Text>
+        <View style={inputStyles.input}>
+          <Text style={textStyles.text}>{this.props.product}</Text>
         </View>
         <View style={inputStyles.input}>
-          <Text style={styles.text}>{this.props.digits}</Text>
+          <Text style={textStyles.text}>{this.props.digits}</Text>
         </View>
       </View>
     );
