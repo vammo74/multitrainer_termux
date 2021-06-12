@@ -8,14 +8,15 @@ import Timer from "./Timer";
 
 const Calculator = (props) => {
   const [savedStats, setSavedStats] = useState(
-    '{"level":4,"product":"","products":["5 ✕ 9","5 ✕ 8","4 ✕ 7","2 ✕ 2","2 ✕ 3","2 ✕ 4","2 ✕ 5","2 ✕ 6","2 ✕ 7","2 ✕ 8","2 ✕ 9","2 ✕ 10","3 ✕ 3","3 ✕ 4","3 ✕ 5","3 ✕ 6","3 ✕ 7","3 ✕ 8","3 ✕ 9","4 ✕ 4","4 ✕ 5","4 ✕ 6","4 ✕ 8","4 ✕ 9","4 ✕ 10","5 ✕ 5","5 ✕ 6","5 ✕ 7","5 ✕ 10","6 ✕ 6","6 ✕ 7","6 ✕ 8","6 ✕ 9","6 ✕ 10","7 ✕ 7","7 ✕ 8","7 ✕ 9","7 ✕ 10","8 ✕ 8","8 ✕ 9","8 ✕ 10","9 ✕ 9","9 ✕ 10","10 ✕ 10"],"levelAttempts":0}'
+    '{"level":4,"product":"","products":["5 ✕ 9","5 ✕ 8","4 ✕ 7","2 ✕ 2","2 ✕ 3","2 ✕ 4","2 ✕ 5","2 ✕ 6","2 ✕ 7","2 ✕ 8","2 ✕ 9","2 ✕ 10","3 ✕ 3","3 ✕ 4","3 ✕ 5","3 ✕ 6","3 ✕ 7","3 ✕ 8","3 ✕ 9","4 ✕ 4","4 ✕ 5","4 ✕ 6","4 ✕ 8","4 ✕ 9","4 ✕ 10","5 ✕ 5","5 ✕ 6","5 ✕ 7","5 ✕ 10","6 ✕ 6","6 ✕ 7","6 ✕ 8","6 ✕ 9","6 ✕ 10","7 ✕ 7","7 ✕ 8","7 ✕ 9","7 ✕ 10","8 ✕ 8","8 ✕ 9","8 ✕ 10","9 ✕ 9","9 ✕ 10","10 ✕ 10"],"levelAttempts":true}'
   );
-  const [levelAttempts, setLevelAttempts] = useState(0);
+  const [levelAttempts, setLevelAttempts] = useState(true);
   const [started, setStarted] = useState(false);
   const [product, setProduct] = useState("");
   const [products, setProducts] = useState([]);
   const [digits, setDigits] = useState("");
   const [timerFlag, setTimerFlag] = useState("stop");
+  const [timerRate, setTimerRate] = useState(5);
 
   const scoreTrackerRef = useRef();
   const screenRef = useRef();
@@ -172,6 +173,10 @@ const Calculator = (props) => {
       setProducts(generateProducts());
       setDigits("");
     }
+    if (digits.length === 3 && !started && digits.slice(0, 2) === "77") {
+      setTimerRate(digits[2]);
+      setDigits("");
+    }
     if (!started) {
       setDigits("");
     }
@@ -202,6 +207,15 @@ const Calculator = (props) => {
     scoreTrackerRef.current.changeHeight(barFillHeight.toString());
   }, [products, product]);
 
+  const outOfTimeHandler = () => {
+    if (levelAttempts) {
+      setLevelAttempts(false);
+    } else {
+      setLevelAttempts(true);
+      props.onChangeLevel("down");
+    }
+  };
+
   return (
     <View className="calculator" style={styles.calculator}>
       <Screen ref={screenRef} product={product} digits={digits} key="screen" />
@@ -211,7 +225,13 @@ const Calculator = (props) => {
           ref={scoreTrackerRef}
           level={props.level}
         />
-        <Timer style={styles.timer} timerFlag={timerFlag} level={props.level} />
+        <Timer
+          style={styles.timer}
+          timerFlag={timerFlag}
+          level={props.level}
+          onOutOfTime={outOfTimeHandler}
+          timerRate={timerRate}
+        />
         <NumberPad
           style={styles.numberPad}
           digits={digits}
@@ -220,6 +240,7 @@ const Calculator = (props) => {
           onEnter={enterHandler}
           onStart={!started ? startHandler : stopHandler}
           started={started}
+          onOutOfTime={outOfTimeHandler}
         />
       </View>
     </View>
@@ -229,10 +250,13 @@ const Calculator = (props) => {
 const styles = StyleSheet.create({
   calculator: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#8d8e96",
     alignItems: "center",
     justifyContent: "center",
-    height: "50%",
+    height: "47%",
+
+    width: "90%",
+    marginBottom: "3%",
   },
   calculatorBody: {
     flex: 1,
