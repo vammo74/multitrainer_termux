@@ -18,13 +18,17 @@ const InfoButton = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
   },
   button: {
-    backgroundColor: "rgba(20,174,255,0.51)",
+    backgroundColor: "#00b3b3",
+    alignSelf: "flex-end",
     justifyContent: "center",
     alignContent: "center",
     borderWidth: 3,
     borderRadius: 20,
+    borderColor: "#fff",
 
     width: 30,
     height: 30,
@@ -34,6 +38,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 20,
+    fontFamily: "serif",
+    color: "#fff",
   },
 });
 
